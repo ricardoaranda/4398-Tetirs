@@ -55,6 +55,7 @@ class Board extends JPanel
 	public static final int HORIZONTAL_MIDDLE = 190;
 	
 	private BufferedImage tiles;
+	private int color;
 	// test shape
 	private int[][] coords = new int[][]{{0,1,1},
 					     {1,1,0},
@@ -73,17 +74,23 @@ class Board extends JPanel
 		}
 	}
 	
+	//gets the shape and color from the generated shape
+	public void retrieveShape(){
+		Tetris t = Tetris.randomOne();
+		color = BLOCK_SIZE * t.getColor();
+		coords = t.getShape();
+	}
+	
 	
 	// paints the board and renders the block shapes at the same time
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		
 		//crops the image to a single 24X24 block
-		//TO DO allow different crops depending on the type of block
-		BufferedImage block = tiles.getSubimage(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+		retrieveShape();
+		BufferedImage block = tiles.getSubimage(color, 0, BLOCK_SIZE, BLOCK_SIZE);
 		
 		//prints the block in the shape of the tetromino
-		// TO DO change implementation to match block configuration
 		for(int row = 0; row < coords.length; row++)
 			for(int col = 0; col < coords[row].length; col++)
 				if(coords[row][col] == 1)
