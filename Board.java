@@ -1,4 +1,10 @@
-class Board
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+
+class Board extends JPanel
 {
 	private int row; 
 	private int col;  
@@ -42,3 +48,53 @@ class Board
 	{   
 		this.image = image;  
 	} 
+	
+	
+	public static final int BLOCK_SIZE = 24;
+	public static final int VERTICAL_MIDDLE = 32;
+	public static final int HORIZONTAL_MIDDLE = 190;
+	
+	private BufferedImage tiles;
+	// test shape
+	private int[][] coords = new int[][]{{0,1,1},
+					     {1,1,0},
+					     {0,0,0}};
+	
+	
+	
+	// Loads an image file of individual tiles
+	public void loadImage(){
+		tiles = null;
+		// reads the image file of the blocks
+		try {
+			tiles = ImageIO.read(new File("C:\\Users\\Amy\\Documents\\GitHub\\Tetris\\tiles.png"));
+		} catch (IOException e) {
+			
+		}
+	}
+	
+	
+	// paints the board and renders the block shapes at the same time
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		
+		//crops the image to a single 24X24 block
+		//TO DO allow different crops depending on the type of block
+		BufferedImage block = tiles.getSubimage(0, 0, BLOCK_SIZE, BLOCK_SIZE);
+		
+		//prints the block in the shape of the tetromino
+		// TO DO change implementation to match block configuration
+		for(int row = 0; row < coords.length; row++)
+			for(int col = 0; col < coords[row].length; col++)
+				if(coords[row][col] == 1)
+					g.drawImage(block, col*BLOCK_SIZE+HORIZONTAL_MIDDLE, row*BLOCK_SIZE+VERTICAL_MIDDLE, null);
+		
+		
+		// prints the board lines
+		g.drawRect(100, 30, 240, 480);
+		g.drawString("Hold", 420, 40);
+		g.drawRect(400, 50, 100, 100);
+		g.drawString("Up Next", 420, 190);
+		g.drawRect(400, 200, 100, 100);
+
+	}
