@@ -21,6 +21,20 @@ public class GUIManager extends JPanel {
 		window.add(board);
 		window.setVisible(true);
 		
+		
+		// repaint test stub for the repaint() method
+		// able to call repaint() here, but not in MainActivity
+		// TODO figure out why
+		///*
+		for(long i = 0; i < 1000000000; i++){
+			for(long j = 0; j < 10000000; j++){
+				
+			}
+			board.updatePosition();
+			board.repaint();
+		}
+		//*/
+		
 	}
 	
 	public static void main(String args[]){
