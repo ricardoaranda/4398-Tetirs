@@ -40,7 +40,7 @@ public class MainActivity extends Canvas implements Runnable{
 		// timer variables
 		long lastTime = System.nanoTime();
 		long timer = System.currentTimeMillis();
-		final double ns = 1000000000.0 / 60.0;	// nanoseconds conversion 
+		final double ns = 1000000000.0;				// nanoseconds conversion 
 		double delta = 0;						// elapsed time b/w now and lastTime
 		// fps counter variables
 		int frames = 0;							// counts how many frames we have time to render
