@@ -1,7 +1,59 @@
-import java.awt.image.*;
-import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class MainActivity extends Canvas implements Runnable{
+public class MainActivity extends JPanel implements Runnable{
+	
+	public static final int WIDTH = 600;
+	public static final int HEIGHT = 600;
+	public JFrame window;
+	private Board board;
+	public static int speed = 60;
+
+	
+	public MainActivity(){
+
+		window = new JFrame("Tetris Game");
+		window.setSize(WIDTH, HEIGHT);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setResizable(false);
+		window.setLocationRelativeTo(null);
+		
+		board = new Board();
+		window.getContentPane().add(board);
+		window.addKeyListener(new KeyListener() {
+			public void keyTyped(KeyEvent e) {
+			}
+			
+			public void keyPressed(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_UP:
+					board.rotate();
+					break;
+				case KeyEvent.VK_DOWN:
+					board.speedDown();
+					break;
+				case KeyEvent.VK_LEFT:
+					board.moveRight();
+					break;
+				case KeyEvent.VK_RIGHT:
+					board.moveLeft();
+					break;
+				case KeyEvent.VK_SPACE:
+					board.drop();
+					break;
+				} 
+			}
+			
+			public void keyReleased(KeyEvent e) {
+			}
+		});
+		
+		
+		window.setVisible(true);
+		
+	}
 	
 	private Thread thread;
 	private boolean running = false;
@@ -55,7 +107,6 @@ public class MainActivity extends Canvas implements Runnable{
 				updates++;
 				delta--;
 			}
-			render();
 			frames++;
 			
 			// FPS counter
@@ -71,21 +122,16 @@ public class MainActivity extends Canvas implements Runnable{
 	}
 	
 	public void update() {
-		
+		board.updatePosition();
+		board.repaint();
 	}
 	
-	public void render() {
-		BufferStrategy bs = getBufferStrategy();
-		if (bs == null) {
-		    createBufferStrategy(3);
-		    return;
-		}
-	}
+
 	
-	//public static void main(String[] args) {
-	//	MainActivity game = new MainActivity();
-    //
-    //    game.start();
-	//}
+	public static void main(String[] args) {
+		MainActivity game = new MainActivity();
+    
+        game.start();
+	}
 	
 }
