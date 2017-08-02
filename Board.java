@@ -79,7 +79,8 @@ class Board extends JPanel
 	}
 	
 	public void speedDown(){
-		row = row + 15;
+		//row = row + 15;
+		GUIManager.setSpeed(1000);
 	}
 	public void drop(){
 		row = BOTTOM;
