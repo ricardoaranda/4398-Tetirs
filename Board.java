@@ -5,9 +5,7 @@ import java.io.IOException;
 
 
 class Board extends JPanel
-{
-	private int row; 
-	private int col;  
+{ 
 	private Image image; // board backgroud image
 	
 	public Board() 
@@ -50,48 +48,65 @@ class Board extends JPanel
 	} 
 	
 	
-	
 	public static final int BLOCK_SIZE = 24;
 	public static final int BOTTOM = 510;
-	
 
 	private BufferedImage tiles;
 	private int color;
 	private int[][] coords;
 	private Tetris t;
-	private int xCoord;
-	private int yCoord;
 	private int level;
 	private int bottomBorder;
+	private int row; 
+	private int col;  
+	private int numRotations;
 
 
 	// constructor for the boards gui components
 	public Board() 
 	{ 
-		xCoord = 190;
-		yCoord = 32;
+		col = 190;
+		row = 32;
 		level = 1;
 		
 		newShape();
 		loadImage();
 	} 
 	
+	public void rotate(){
+		coords = t.getState(numRotations%4);
+		numRotations++;
+	}
+	
+	public void speedDown(){
+		row = row + 15;
+	}
+	public void drop(){
+		row = BOTTOM;
+	}
+	public void moveRight(){
+		col = col - 15;
+	}
+	public void moveLeft() {
+		col = col + 15;
+	}
+	
 	
 	// paints the board and renders the block shapes at the same time
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		
-		printShape(xCoord, yCoord, g);
+		printShape(col, row, g);
 		paintBoard(g);
 
 	}
 	
 	// resets the y position of the block so it stays on the screen
 	public void updatePosition(){
-		if(yCoord <= BOTTOM-bottomBorder)
-			yCoord += 1;
+		if(row <= BOTTOM-bottomBorder)
+			row += 1;
 		else{
-			yCoord = 32;
+			row = 32;
 			repaint();
 			newShape();
 		}
