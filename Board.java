@@ -50,21 +50,62 @@ class Board extends JPanel
 	} 
 	
 	
-	public static final int BLOCK_SIZE = 24;
-	public static final int VERTICAL_MIDDLE = 32;
-	public static final int HORIZONTAL_MIDDLE = 190;
 	
+	public static final int BLOCK_SIZE = 24;
+	public static final int BOTTOM = 510;
+	
+
 	private BufferedImage tiles;
 	private int color;
-	// test shape
-	private int[][] coords = new int[][]{{0,1,1},
-					     {1,1,0},
-					     {0,0,0}};
+	private int[][] coords;
+	private Tetris t;
+	private int xCoord;
+	private int yCoord;
+	private int level;
+	private int bottomBorder;
+
+
+	// constructor for the boards gui components
+	public Board() 
+	{ 
+		xCoord = 190;
+		yCoord = 32;
+		level = 1;
+		
+		newShape();
+		loadImage();
+	} 
 	
 	
+	// paints the board and renders the block shapes at the same time
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		
+		printShape(xCoord, yCoord, g);
+		paintBoard(g);
+
+	}
 	
-	// Loads an image file of individual tiles
-	public void loadImage(){
+	// resets the y position of the block so it stays on the screen
+	public void updatePosition(){
+		if(yCoord <= BOTTOM-bottomBorder)
+			yCoord += 1;
+		else{
+			yCoord = 32;
+			repaint();
+			newShape();
+		}
+	}
+	
+	// gets a random block shape, color, and coordinates
+	public void newShape(){
+		t = Tetris.randomOne();
+		color = BLOCK_SIZE * t.getColor();
+		coords = t.getShape();
+	}
+	
+	// loads the tile image 
+	private void loadImage(){
 		tiles = null;
 		// reads the image file of the blocks
 		try {
@@ -74,34 +115,32 @@ class Board extends JPanel
 		}
 	}
 	
-	//gets the shape and color from the generated shape
-	public void retrieveShape(){
-		Tetris t = Tetris.randomOne();
-		color = BLOCK_SIZE * t.getColor();
-		coords = t.getShape();
+	//paints the simple lines of the gameplay board
+	private void paintBoard(Graphics g){
+		// prints the board lines
+		g.drawRect(100, 30, 240, BOTTOM);
+		
+		g.drawString("Hold", 420, 40);
+		g.drawRect(400, 50, 100, 100);
+		
+		g.drawString("Up Next", 420, 190);
+		g.drawRect(400, 200, 100, 100);
 	}
 	
-	
-	// paints the board and renders the block shapes at the same time
-	public void paintComponent(Graphics g){
-		super.paintComponent(g);
-		
+	// prints the tetris blocks based on 2D array coordinates
+	private void printShape(int x, int y, Graphics g){
 		//crops the image to a single 24X24 block
-		retrieveShape();
 		BufferedImage block = tiles.getSubimage(color, 0, BLOCK_SIZE, BLOCK_SIZE);
 		
 		//prints the block in the shape of the tetromino
 		for(int row = 0; row < coords.length; row++)
 			for(int col = 0; col < coords[row].length; col++)
-				if(coords[row][col] == 1)
-					g.drawImage(block, col*BLOCK_SIZE+HORIZONTAL_MIDDLE, row*BLOCK_SIZE+VERTICAL_MIDDLE, null);
-		
-		
-		// prints the board lines
-		g.drawRect(100, 30, 240, 480);
-		g.drawString("Hold", 420, 40);
-		g.drawRect(400, 50, 100, 100);
-		g.drawString("Up Next", 420, 190);
-		g.drawRect(400, 200, 100, 100);
-
+				if(coords[row][col] == 1){
+					g.drawImage(block, col*BLOCK_SIZE+x, row*BLOCK_SIZE+y, null);
+					bottomBorder += BLOCK_SIZE * row;
+				}
+		bottomBorder = 0;
 	}
+	
+
+}
