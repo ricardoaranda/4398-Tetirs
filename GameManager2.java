@@ -83,26 +83,50 @@ public static boolean[] collision (AbstractPiece gamePiece, BoardManager board){
 */
 public static void play() {
 	// Set up gameboard
-	BoardManager board;
+	BoardManager board = new BoardManager();
 	board.bmInit();
 	
-	AbstractPiece gamePiece;
+	// Assign a game piece
+	AbstractPiece gamePiece = new AbstractPiece();
+	
+	//Assign game time
+	int gameTime;
 	
 	while(!pauseFlag) {
 		if (!gamePiece.exists()) {
 			gamePiece.initialize();
 		}
 		if (gamePiece.exists()) {
+			gameTime = Math.round(System.nanoTime());
 			boolean holder[] = collision(gamePiece, board);
+			fallingState(gameTime);
+			
 			if (holder[2]) {
+				gameTime = Math.round(System.nanoTime());
+				int restTime = 0;
+				
 				if (gamePiece.getPosition() >= board.getHeight()) {
 					exitGameplay();
+				} 
+				
+				while (restTime <= 2 && holder[2]) {
+					//-------- 
+					// can still get user input here 
+					// --------
+					int currentTime = Math.round(System.nanoTime());
+					int restTimer = currentTime - gameTime;
+					if (restTimer >= 2) {
+						BoardManager.transitionPiece(gamePiece);
+						gamePiece.clearPiece();
+					}
+					restTimer = 0;
 				}
 			}
 			
+			// Detect Keyboard Input
 			KeyEvent keyboardEvent;
 			keyPressed(keyboardEvent, gamePiece, board);
-			update();
+			update(gamePiece);
 		}
 	}
 }
@@ -160,21 +184,19 @@ public static void keyPressed (KeyEvent event, AbstractPiece gamePiece, BoardMan
 			break;
 	}
 }
+	
+	public static void fallingState(int gameTime){
+	   if (gameTime%2 == 0) {
+		   moveDown += 1;
+	   }
+	}
 
-	
-	
-	/* public static fallingState(){
-	 *   
-	 * }
-	 */
-	
-	/* public static void update(){
-	 *   // update Piece Position
-	 *   
-	 *   
-	 *   // Reset the amount a piece should move
-	 *   moveLeft = moveRight = moveDown = 0;
-	 * }
-	 */
-	
+	public static void update(AbstractPiece gamePiece){
+		// update Piece Position
+		gamePiece.movePosition(moveLeft, moveRight, moveDown);
+		// update the Graphic Position
+		// ...........................
+		// Reset the amount a piece should move
+		moveLeft = moveRight = moveDown = 0;
+	}
 }
